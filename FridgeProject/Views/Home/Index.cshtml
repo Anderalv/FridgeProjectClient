@@ -1,8 +1,99 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<div class="container">
+  <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light" style="height: 420px">
+    <div class="col-md-5 p-lg-5 mx-auto my-5"> 
+      <h1 class="display-4 fw-normal" style="margin-top: -80px; width: 326px;">Fridge project</h1>
+      <p class="lead fw-normal">This site is designed to manage fridges, as well as the products contained in them. Using the site interface, you can change, delete and add products, as well as fridges.</p>
+    </div>
+    <div class="product-device shadow-sm d-none d-md-block"></div>
+    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+  </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+  <div class="container px-4 py-5" id="featured-3" >
+    <h2 class="pb-2 border-bottom">What can you do?</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+
+      <div class="col">
+        <div class="feature-icon bg-primary bg-gradient">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#collection"></use></svg>
+        </div>
+        <h2>Show all fridges</h2>
+        <p>Page for viewing all refrigerators and the ability to edit them.</p>
+        <a href="/Home/AllFridges" class="icon-link">
+          all fridges
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+        </a>
+      </div>
+
+      <div class="col">
+        <div class="feature-icon bg-primary bg-gradient">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#people-circle"></use></svg>
+        </div>
+        <h2>Create new fridge</h2>
+        <p>Page to add a new fridge</p>
+        <a href="/Home/CreateFridge" class="icon-link">
+          create fridge
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+        </a>
+      </div>
+
+      <div class="col">
+        <div class="feature-icon bg-primary bg-gradient">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#toggles2"></use></svg>
+        </div>
+        <h2>Show all products</h2>
+        <p>Page for viewing all products and the ability to edit them.</p>
+        <a href="/Home/AllProducts" class="icon-link">
+          all products
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+        </a>
+      </div>
+
+      <div class="col">
+        <div class="feature-icon bg-primary bg-gradient">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#toggles2"></use></svg>
+        </div>
+        <h2>Call stored procedure</h2>
+        <p>Find refrigerators where the number of products is zero and change to the default value.</p>
+        <a type="button" class="call-stored-procedure" data-toggle="modal" data-target="#exampleModal" href="#">
+          stored procedure
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Stored procedure</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        You call stored procedure
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $(document).on('click',".call-stored-procedure",function () {
+      let storedProcedure = fetch('https://localhost:5001/api/Fridges/CallStoredProcedure', {
+        method: 'PUT',
+      });
+    });
+  });
+</script>

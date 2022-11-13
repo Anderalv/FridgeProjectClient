@@ -3062,15 +3062,15 @@ input[type="button"].btn-block {
   display: none;
   float: left;
   min-width: 10rem;
-  padding: 0.5rem 0;
-  margin: 0.125rem 0 0;
+  padding: 0.5rem 263px 0 0px;
+  margin: 0.125rem 0px 0px;
   font-size: 1rem;
   color: #212529;
   text-align: left;
   list-style: none;
-  background-color: #fff;
+  background-color: #fef4f4;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0,0,0,.15);
   border-radius: 0.25rem;
 }
 
@@ -5878,14 +5878,13 @@ a.close.disabled {
 }
 
 .modal-footer {
-  display: -ms-flexbox;
-  display: flex;
+ 
   -ms-flex-align: center;
   align-items: center;
   -ms-flex-pack: end;
   justify-content: flex-end;
   padding: 1rem;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid #ef5965;
   border-bottom-right-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
 }

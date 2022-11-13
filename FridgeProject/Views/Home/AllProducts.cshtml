@@ -1,0 +1,107 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="my_container" id="forTable">
+    <div class="table" id="forAllProducts">
+        
+    </div>
+    
+
+    <div class="modal fade" id="delete-product" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete-product-label">Delete product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Do you want to delete this product?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btnDeleteProduct btn btn-primary">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    fetch('https://localhost:5001/api/products/AllProducts').then(data => data.json())
+        .then(function (data){
+            let box = document.getElementById("forAllProducts");
+            for (let i=0;i < data.length; i++) {
+                let str = `<div class="elementsOfTable">
+                    <h2 id="product-name-for-edit">${data[i].name}</h2>
+                    <h3 id="product-default-quantity-for-edit">Default quantity: ${data[i].defaultQuantity}</h3>
+                    <input type="hidden" id="product-id" value="${data[i].id}"/>
+                    <div class="modal-footer">
+                        <a class="btnFormProductEdit btn btn-warning" href="/Home/EditProduct">Edit</a>
+                        <button type="button" class="btnRequestDeleteProduct btn btn-secondary delete" data-toggle="modal" data-target="#delete-product" href="/Home/AllProducts">Delete</button>
+                    </div>
+                </div>`;
+    
+                box.innerHTML += str;
+            }
+            
+            document.getElementById("forTable").innerHTML += '<a href="/Home/CreateProduct" class="icon-link" style = "margin-left: 42px;"> create product <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg></a>'
+        });
+
+
+    $(document).ready(function() {
+        $(document).on('click',".btnFormProductEdit",function () {
+            let block = $(this).parent().parent();
+    
+            let id = block.find('#product-id').val(); 
+      
+            let name = block.find('#product-name-for-edit').text();
+            let defaultQuantity = block.find('#product-default-quantity-for-edit').text().slice(18);
+        
+            localStorage.setItem("nameBeforeEdit", name);
+            localStorage.setItem("defaultQuantityBeforeEdit", defaultQuantity);
+            localStorage.setItem("IdEdit", id);
+ 
+        });
+    });
+
+    $(document).ready(function() {
+        $(document).on('click',".btnRequestDeleteProduct",function () {
+            let block = $(this).parent().parent();
+    
+            let id = block.find('#product-id').val(); 
+      
+            localStorage.setItem("IdDelete", id);
+ 
+        });
+    });
+
+        
+        
+    $(document).ready(function() {
+        $(document).on('click',".btnDeleteProduct",function () {
+            
+            let id = localStorage.getItem("IdDelete");    
+            localStorage.removeItem("IdDelete");
+            
+            let url = 'https://localhost:5001/api/products/DeleteProduct/' + id;
+                    
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify()
+            });
+            
+            window.location.href = 'https://localhost:5003/Home/AllProducts';
+        })
+    });
+</script>
+
+

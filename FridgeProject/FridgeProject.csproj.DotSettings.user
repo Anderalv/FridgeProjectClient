@@ -1,0 +1,3 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/IgnoredPaths/=WWWROOT_005CSCRIPT_005CJQUERY_002D2_002E0_002E0_002EMIN_002EJS/@EntryIndexedValue">wwwroot\script\jquery-2.0.0.min.js</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=WWWROOT_005CSCRIPT_005CJQUERY_002D2_002E0_002E0_002EMIN_002EJS/@EntryIndexedValue">wwwroot\script\jquery-2.0.0.min.js</s:String></wpf:ResourceDictionary>

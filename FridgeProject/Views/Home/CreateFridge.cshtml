@@ -1,0 +1,93 @@
+@{
+  Layout = "_Layout";
+}
+
+
+<form id="create-fridge-form" action="/Home/AllFridges" class="railway">
+    <h3>create new fridge</h3>
+    <div class="form-group" id="formFoCreateFridge">
+        
+        <input type="text" minlength="2" maxlength="30" id="name-new-fridge" required="">
+        <label for="name-new-fridge">Name</label>
+
+        <input type="text" minlength="2" maxlength="30"  id="ownerName-new-fridge" required="">
+        <label for="ownerName-new-fridge">Owner name</label>
+
+        <select name="model" id="optionModel" required="required">
+        </select>
+        <label for="optionModel">Model</label>
+
+        <div class="dropdown">
+            <button required class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">select products</button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="PoductsForm" style="width: 286px"></ul>
+        </div>
+    </div>
+    
+    <div class="submit-block">
+        <div class="submit-button">
+            <input type="submit" class="btnCreateFridge btn btn-warning" value="Create"/>
+        </div>
+    </div>
+</form>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+
+    fetch('https://localhost:5001/api/Model').then(data => data.json())
+        .then(function (data){
+            
+            let OptionModel1 = document.getElementById("optionModel");
+            OptionModel1.innerHTML += `<option disabled value="0">Select model</option>`;
+            for (let i=0;i < data.length; i++) {
+                OptionModel1.innerHTML += `<option value="${data[i].id}">${data[i].name}-${data[i].year} </option>`;
+            }
+        });
+    
+    fetch('https://localhost:5001/api/products/AllProducts').then(data => data.json())
+        .then(function (data){
+                  
+            let OptionProduct = document.getElementById("PoductsForm");
+            for (let i=0;i < data.length; i++) {
+                OptionProduct.innerHTML += `<li><div class="form-check"><input class="form-check-input product-checkbox" type="checkbox" value="${data[i].id}" id="${data[i].id}" /><label class="form-check-label" for="${data[i].id}">${data[i].name}</label></div></li>`;
+            }
+        });
+
+    $(document).ready(function() {
+        $("#create-fridge-form").submit(function () {
+       
+            let name = $('#name-new-fridge').val();
+            let ownerName = $('#ownerName-new-fridge').val();
+              
+            let checkboxesProduct = document.getElementsByClassName('product-checkbox');
+             
+            let CheckedProduct = [];
+            let CheckedModel = document.getElementById("optionModel").value;
+           
+  
+            
+            for (let i = 0; i < checkboxesProduct.length; i++){
+                if (checkboxesProduct[i].checked){
+                    CheckedProduct.push(checkboxesProduct[i].value)
+                }
+            }  
+                           
+            let newFridge = {
+                Name: name,
+                OwnerName: ownerName,
+                IdModel: CheckedModel,
+                ProductsId: CheckedProduct 
+            };
+
+            fetch('https://localhost:5001/api/Fridges/CreateFridge', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(newFridge)
+            });  
+        });
+    });
+</script>

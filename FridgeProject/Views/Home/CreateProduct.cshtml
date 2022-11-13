@@ -1,0 +1,50 @@
+@{
+  Layout = "_Layout";
+}
+
+
+<form id="create-product-form" action="/Home/AllProducts" class="railway" >
+    <h3>create new product</h3>
+    <div class="form-group" id="formFoCreateProduct">
+        <input type="text" minlength="2" maxlength="30" required="" id="name-new-product" class="newProduct-name"/><label for="name-new-product">Name</label>
+        <input type="number" min="1" max="30" id="quantity-new-product" class="newProduct-Quantity" required=""/><label for="quantity-new-product">Quantity</label>
+ 
+        <div class="submit-block">
+            <div class="submit-button">
+                <input type="submit" class="btnCreateProduct btn btn-warning" value="Create">
+            </div>
+        </div>
+        
+    </div>
+</form>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function() {
+        $("#create-product-form").submit(function () {
+
+            let name = $('#name-new-product').val();
+            let quantity = $('#quantity-new-product').val();
+           
+           
+            let newProduct = {
+                name: name,
+                Quantity: quantity
+            };
+                           
+            fetch('https://localhost:5001/api/products/CreateProduct', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(newProduct)
+            });   
+           
+        });
+    });
+</script>
+

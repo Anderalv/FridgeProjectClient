@@ -1,0 +1,138 @@
+@{
+  Layout = "_Layout";
+}
+
+<form id="edit-fridge-form" action="/Home/AllFridges" class="railway" >
+
+    <h3>edit fridge</h3>
+    <div class="form-group" id="formForEditFridge">
+        <div id="editNames">
+            
+        </div>
+   
+        <select name="model" id="OptionModel" required="required">
+            
+        </select>
+        <label for="model">Model</label>
+        
+        
+        <div id="productsOnFridge" style="margin-top: 25px">
+            <h5>Products on fridge</h5>
+        </div>
+        
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" style="margin-top: 5px" aria-expanded="false">add products</button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="PoductsForm" style="width: 286px"></ul>
+        </div>
+    </div>
+    
+    
+    <div class="submit-block">
+        <div class="submit-button">
+              <input type="submit" class="btnEditFridge btn btn-warning" value="Edit">
+        </div>
+    </div>
+
+</form>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+      
+    let nameBeforeEdit = localStorage.getItem("nameBeforeEdit"); 
+    let ownerNameBeforeEdit = localStorage.getItem("ownerNameBeforeEdit");
+      
+    let IdFridge = localStorage.getItem("IdFridgeEdit");
+    let IdModel = localStorage.getItem("IdModelEdit");
+       
+    document.getElementById("editNames").innerHTML +=  `<input type="text" minlength="2" maxlength="30" id="fridge-name-edit" required="" value="${nameBeforeEdit}"><label for="fridge-name-edit">Name</label>`;
+    document.getElementById("editNames").innerHTML +=  `<input type="text" minlength="2" maxlength="30" id="fridge-owner-edit" required="" value="${ownerNameBeforeEdit}"><label for="fridge-owner-edit">Owner</label>`;
+      
+    const allModels =  fetch('https://localhost:5001/api/Model').then(data => data.json())
+        .then(function (data){
+                
+            let oldModel = data.find(element => element.id == IdModel)
+
+            let OptionModel1 = document.getElementById("OptionModel");
+            OptionModel1.innerHTML += `<option value="${oldModel.id}">${oldModel.name}-${oldModel.year}</option>`;
+            for (let i=0;i < data.length; i++) {
+                if (data[i].id !== oldModel.id){   
+                    OptionModel1.innerHTML += `<option value="${data[i].id}">${data[i].name}-${data[i].year} </option>`;
+                }
+            }
+        });
+     
+    fetch('https://localhost:5001/api/products/AllProducts').then(allProducts => allProducts.json())
+        .then(function (allProducts){
+            let url = "https://localhost:5001/ProductOnFridge/" + IdFridge;
+            fetch(url).then(productsOnFridge => productsOnFridge.json())
+                .then(function (productsOnFridge){
+
+                    for (let i = 0; i < productsOnFridge.length; i++){
+                        document.getElementById("productsOnFridge").innerHTML += `<label id="name-${productsOnFridge[i].id}" for="quantity" style="margin-bottom: 0px; margin-top: 10px; color: #d22727;">${productsOnFridge[i].name}</label><input type="number" min="0" max="30" id="quantity-${productsOnFridge[i].id}" required="" value="${productsOnFridge[i].quantity}">`;
+                    }
+              
+                    let othersProducts = allProducts.filter(x => !productsOnFridge.some(y => x.id === y.id));
+                    let OptionProduct = document.getElementById("PoductsForm");
+                    for (let i = 0; i < othersProducts.length; i++) {
+                        OptionProduct.innerHTML += `<li><div class="form-check"><input class="form-check-input product-checkbox" type="checkbox" value="${othersProducts[i].id}" id="${othersProducts[i].id}" /><label class="form-check-label" for="${othersProducts[i].id}">${othersProducts[i].name}</label></div></li>`;
+                    }
+                            
+                    let url = 'https://localhost:5001/EditFridge/' + IdFridge;
+                     $(document).ready(function() {
+                         $("#edit-fridge-form").submit(function () {
+                                             
+                            localStorage.removeItem("nameBeforeEdit"); 
+                            localStorage.removeItem("ownerNameBeforeEdit");
+                            localStorage.removeItem("IdFridgeEdit");
+                            localStorage.removeItem("IdModelEdit");
+                            localStorage.clear();
+                                             
+                            let checkboxesProduct = document.getElementsByClassName('product-checkbox');
+                                             
+                            let newName = $(`#fridge-name-edit`).val();
+                            let newOwnerName = $('#fridge-owner-edit').val();
+                            let newModel = $('#OptionModel').val(); 
+                                            
+                            let CheckedProducts = [];
+                            let editedProducts = [];
+                                             
+                            for (let i = 0; i < productsOnFridge.length; i++){
+                       
+                                let editedQuantity = document.getElementById(`quantity-${productsOnFridge[i].id}`).value;
+                                let editedProduct = {
+                                    idProduct: productsOnFridge[i].id,
+                                    EditedQuantity: editedQuantity
+                                };
+                                    
+                                editedProducts.push(editedProduct);
+                            }
+                                                            
+                            for (let i = 0; i < checkboxesProduct.length; i++){
+                                if (checkboxesProduct[i].checked){
+                                    CheckedProducts.push(checkboxesProduct[i].value)
+                                }
+                            }  
+                                             
+                            let objectForEdit = {
+                                name: newName,
+                                ownerName: newOwnerName,
+                                idModel: newModel,
+                                editedProducts: editedProducts,
+                                addedProducts: CheckedProducts
+                            }
+
+                            let editFridge = fetch(url, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json;charset=utf-8'
+                                },
+                                body: JSON.stringify(objectForEdit)
+                            });
+                        })
+                    });
+                }); 
+        });
+     
+</script>
+
