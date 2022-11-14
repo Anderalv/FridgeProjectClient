@@ -24,82 +24,77 @@
 
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>    
-    
-    fetch('https://localhost:5001/api/Fridges').then(data => data.json())
-        .then(function (data){
-            let main= document.getElementById("main");
-            main.innerHTML += '<div class="my_container" id="forTable"><div class="table" id="forAllFridges"></div></div>';
-            let box = document.getElementById("forAllFridges");
-            for (let i=0;i < data.length; i++) {
-                let str = `<div class="elementsOfTable">
-                    <h2 id ="fridge-name-for-edit">${data[i].name}</h2>
-                    <h3 id ="fridge-owner-name-for-edit">Owner: ${data[i].ownerName}</h3>
-                    <h3>Model: ${data[i].modelName}</h3>
-                    <h3>Year: ${data[i].year}</h3>
-                    <input type="hidden" id="fridge-id" value="${data[i].idFridge}"/>
-                    <input type="hidden" id="model-id" value="${data[i].idModel}"/>
-                    <div class="modal-footer">
-                        <a class="btnFormFridgeEdit btn btn-warning" href="/Home/EditFridge">Edit</a>
-                        <button type="button" class="btnRequestDeleteFridge btn btn-secondary delete" data-toggle="modal" data-target="#delete-fridge" href="/Home/AllFridges">Delete</button>
-                    </div>
-                </div>`;
-                     
-                box.innerHTML += str;
-            }
-                                 
+@section Scripts
+{
+    <script>    
+        fetch('https://localhost:5001/api/Fridges').then(data => data.json())
+            .then(function (data){
+                let main= document.getElementById("main");
+                main.innerHTML += '<div class="my_container" id="forTable"><div class="table" id="forAllFridges"></div></div>';
+                let box = document.getElementById("forAllFridges");
+                for (let i = 0; i < data.length; i++) {
+                    let str = `<div class="elementsOfTable">
+                        <h2 id ="fridge-name-for-edit">${data[i].name}</h2>
+                        <h3 id ="fridge-owner-name-for-edit">Owner: ${data[i].ownerName}</h3>
+                        <h3>Model: ${data[i].modelName}</h3>
+                        <h3>Year: ${data[i].year}</h3>
+                        <input type="hidden" id="fridge-id" value="${data[i].idFridge}"/>
+                        <input type="hidden" id="model-id" value="${data[i].idModel}"/>
+                        <div class="modal-footer">
+                            <a class="btnFormFridgeEdit btn btn-warning" href="/Home/EditFridge">Edit</a>
+                            <button type="button" class="btnRequestDeleteFridge btn btn-secondary delete" data-toggle="modal" data-target="#delete-fridge" href="/Home/AllFridges">Delete</button>
+                        </div>
+                    </div>`;
+                         
+                    box.innerHTML += str;
+                }
+                                     
                 document.getElementById("forTable").innerHTML += '<a href="/Home/CreateFridge" class="icon-link" style = "margin-left: 42px;"> create fridge <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg></a>'
-        });
-
-
-
-    $(document).ready(function() {
-        $(document).on('click',".btnFormFridgeEdit",function () {
-            let block = $(this).parent().parent();
-        
-            let idFridge = block.find('#fridge-id').val(); 
-            let idModel = block.find('#model-id').val(); 
-          
-            let name = block.find('#fridge-name-for-edit').text();
-            let ownerName = block.find('#fridge-owner-name-for-edit').text().slice(7);
-            
-            localStorage.setItem("nameBeforeEdit", name);
-            localStorage.setItem("ownerNameBeforeEdit", ownerName);
-            localStorage.setItem("IdFridgeEdit", idFridge);
-            localStorage.setItem("IdModelEdit", idModel);
-     
-        });
-    });
-
-    $(document).ready(function() {
-        $(document).on('click',".btnRequestDeleteFridge",function () {
-            let block = $(this).parent().parent();
+            });
     
-            let id = block.find('#fridge-id').val(); 
-      
-            localStorage.setItem("IdDelete", id);
-        });
-    });
-
-    $(document).ready(function() {
-        $(document).on('click',".btnDeleteFridge",function () {
+        
+        $(document).ready(function() {
+            $(document).on('click',".btnFormFridgeEdit",function () {
+                let block = $(this).parent().parent();
             
-            let id = localStorage.getItem("IdDelete");    
-            localStorage.removeItem("IdDelete");
-            
-            let url = 'https://localhost:5001/api/Fridges/DeleteFridge/' + id;
-                    
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify()
+                let idFridge = block.find('#fridge-id').val(); 
+                let idModel = block.find('#model-id').val(); 
+              
+                let name = block.find('#fridge-name-for-edit').text();
+                let ownerName = block.find('#fridge-owner-name-for-edit').text().slice(7);
+                
+                localStorage.setItem("nameBeforeEdit", name);
+                localStorage.setItem("ownerNameBeforeEdit", ownerName);
+                localStorage.setItem("IdFridgeEdit", idFridge);
+                localStorage.setItem("IdModelEdit", idModel);
             });
             
-            window.location.href = 'https://localhost:5003/Home/AllFridges';
-        })
-    });
-
-</script>
+            $(document).on('click',".btnRequestDeleteFridge",function () {
+                let block = $(this).parent().parent();
+                let id = block.find('#fridge-id').val(); 
+                localStorage.setItem("IdDelete", id);
+            });    
+            
+            $(document).on('click',".btnDeleteFridge",function (e) {
+                e.preventDefault();
+                
+                let id = localStorage.getItem("IdDelete");    
+                localStorage.removeItem("IdDelete");
+                
+                let url = 'https://localhost:5001/api/Fridges/DeleteFridge/' + id;
+                        
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify()
+                }).then(_ => {
+                    e.currentTarget.submit();
+                });    
+                
+                window.location.href = 'https://localhost:5003/Home/AllFridges';
+            });        
+        });
+    </script>
+}

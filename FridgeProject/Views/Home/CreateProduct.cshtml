@@ -19,32 +19,30 @@
 </form>
 
 
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>
-
-    $(document).ready(function() {
-        $("#create-product-form").submit(function () {
-
-            let name = $('#name-new-product').val();
-            let quantity = $('#quantity-new-product').val();
-           
-           
-            let newProduct = {
-                name: name,
-                Quantity: quantity
-            };
-                           
-            fetch('https://localhost:5001/api/products/CreateProduct', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(newProduct)
-            });   
-           
+@section Scripts
+{
+    <script>
+        $(document).ready(function() {
+            $("#create-product-form").submit(function (e) {
+                e.preventDefault()
+                let name = $('#name-new-product').val();
+                let quantity = $('#quantity-new-product').val();
+               
+                let newProduct = {
+                    name: name,
+                    Quantity: quantity
+                };
+                               
+                fetch('https://localhost:5001/api/products/CreateProduct', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(newProduct)
+                }).then(_ => {
+                    e.currentTarget.submit();
+                });     
+            });
         });
-    });
-</script>
-
+    </script>
+}

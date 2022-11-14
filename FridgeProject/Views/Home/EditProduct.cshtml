@@ -17,38 +17,41 @@
     </div>
 </form>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>
-    let nameBeforeEdit = localStorage.getItem("nameBeforeEdit");
-    let defaultQuantityBeforeEdit = localStorage.getItem("defaultQuantityBeforeEdit");
-    let IdEdit = localStorage.getItem("IdEdit");
+@section Scripts
+{
+    <script>
+        let nameBeforeEdit = localStorage.getItem("nameBeforeEdit");
+        let defaultQuantityBeforeEdit = localStorage.getItem("defaultQuantityBeforeEdit");
+        let IdEdit = localStorage.getItem("IdEdit");
+        
+        document.getElementById("formForEditProduct").innerHTML +=  `<input type="text" minlength="2" maxlength="30" id="product-name-edit" required="" value="${nameBeforeEdit}"/><label for="name">Name</label>`;
+        document.getElementById("formForEditProduct").innerHTML +=  `<input type="number" min="1" max="30" id="product-defaultQuantity-edit" required="" value="${defaultQuantityBeforeEdit}"><label for="defaultQuantity">Default quantity</label>`;
+        localStorage.removeItem("nameBeforeEdit"); 
+        localStorage.removeItem("defaultQuantityBeforeEdit");
+        localStorage.removeItem("IdEdit");
+        localStorage.clear();
     
-    document.getElementById("formForEditProduct").innerHTML +=  `<input type="text" minlength="2" maxlength="30" id="product-name-edit" required="" value="${nameBeforeEdit}"/><label for="name">Name</label>`;
-    document.getElementById("formForEditProduct").innerHTML +=  `<input type="number" min="1" max="30" id="product-defaultQuantity-edit" required="" value="${defaultQuantityBeforeEdit}"><label for="defaultQuantity">Default quantity</label>`;
-    localStorage.removeItem("nameBeforeEdit"); 
-    localStorage.removeItem("defaultQuantityBeforeEdit");
-    localStorage.removeItem("IdEdit");
-    localStorage.clear();
-
-    let url = 'https://localhost:5001/api/products/' + IdEdit;
-    $(document).ready(function() {
-        $("#edit-product-form").submit(function () {
-            
-            let name = $('#product-name-edit').val();
-            let quantity = $('#product-defaultQuantity-edit').val();
-            let editProduct = {
-                name: name,
-                Quantity: quantity
-            };
-            
-           fetch(url, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-              },
-              body: JSON.stringify(editProduct)
-            });
-        })
-    });
-</script>
-
+        let url = 'https://localhost:5001/api/products/' + IdEdit;
+        $(document).ready(function() {
+            $("#edit-product-form").submit(function (e) {      
+                e.preventDefault();
+                let name = $('#product-name-edit').val();
+                let quantity = $('#product-defaultQuantity-edit').val();
+                let editProduct = {
+                    name: name,
+                    Quantity: quantity
+                };
+                
+               fetch(url, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                  },
+                  body: JSON.stringify(editProduct)
+               }).then(_ => {
+                  e.currentTarget.submit();
+               });    
+            })
+        });
+    </script>
+}
